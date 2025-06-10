@@ -824,3 +824,81 @@ echo json_encode($response);
   "message": "How Are You"
 }
 ```
+
+# 📑 insert Data to database
+
+```php
+<?php
+
+include "connect.php" ;
+
+$ahm = $con->prepare("INSERT INTO `users` (`username`, `email`) VALUES ('Yasser', 'yasser@gmail.com')");
+$ahm->execute() ; 
+
+$count = $ahm->rowCount() ;
+
+if ($count > 0) {
+    echo "seccess" ;
+}else{
+    echo "faild" ;
+}
+?>
+
+```
+**✔️ هاد الكود كيقول ليك زيد واحد row في جدول users فيها القيم دياله username = Yasser و email = yasser@gmail.com.**
+
+**✔️  الكود كيرجع رسالة نجاح أو فشل حسب ما حدث.**
+
+## 🧱 تفصيل الكود:
+
+ا **prepare("INSERT INTO `users` (`username`, `email`) VALUES ('Yasser', 'yasser@gmail.com')"):** هاد السطر كنحضّرو استعلام SQL فيه شرط "أضف ليا سطر جديد في جدول users فيه username = Yasser و email = yasser@gmail.com"
+
+ا **()execute:** هاد السطر كيخلّي الاستعلام يتنفذ فعلاً، 
+
+ا **()rowCount:** كترجع عدد السطور اللي جابهم الاستعلام.
+
+ا **(count$ > 0) if:** هاد السطر كيرجع رسالة نجاح أو فشل حسب ما حدث.
+
+---
+
+### هاد الاكواد عندها نفس الدور 👇 :
+
+```php
+<?php
+
+include "connect.php" ;
+
+$ahm = $con->prepare("INSERT INTO `users` (`username`, `email`) VALUES (?, ?)");
+$ahm->execute(array("Samir","samir@gmail.com")) ; 
+
+$count = $ahm->rowCount() ;
+
+if ($count > 0) {
+    echo "seccess" ;
+}else{
+    echo "faild" ;
+}
+?>
+ ```
+ ---
+```php
+<?php
+
+include "connect.php" ;
+
+$ahm = $con->prepare("INSERT INTO `users` (`username`, `email`) VALUES (:us, :em)");
+$ahm->execute(
+    array(
+        ":us" => "Zakariya",
+        ":em" => "zakariya@gmail.com" ,
+        )) ; 
+
+$count = $ahm->rowCount() ;
+
+if ($count > 0) {
+    echo "seccess" ;
+}else{
+    echo "faild" ;
+}
+?>
+ ```
