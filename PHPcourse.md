@@ -853,11 +853,11 @@ if ($count > 0) {
 
 ا **prepare("INSERT INTO `users` (`username`, `email`) VALUES ('Yasser', 'yasser@gmail.com')"):** هاد السطر كنحضّرو استعلام SQL فيه شرط "أضف ليا سطر جديد في جدول users فيه username = Yasser و email = yasser@gmail.com"
 
-ا **()execute:** هاد السطر كيخلّي الاستعلام يتنفذ فعلاً، 
+ا `()execute:` هاد السطر كيخلّي الاستعلام يتنفذ فعلاً، 
 
-ا **()rowCount:** كترجع عدد السطور اللي جابهم الاستعلام.
+ا `()rowCount:` كترجع عدد السطور اللي جابهم الاستعلام.
 
-ا **(count$ > 0) if:** هاد السطر كيرجع رسالة نجاح أو فشل حسب ما حدث.
+ا `if (count$ > 0):` هاد السطر كيرجع رسالة نجاح أو فشل حسب ما حدث.
 
 ---
 
@@ -902,3 +902,350 @@ if ($count > 0) {
 }
 ?>
  ```
+
+# 🔁 Update :
+
+```php
+<?php
+
+include "connect.php" ;
+
+$ahm = $con->prepare("UPDATE `users` SET username = 'Aymen' WHERE id = 3 ");
+$ahm->execute() ; 
+
+$count = $ahm->rowCount() ;
+
+if ($count > 0) {
+    echo "seccess" ;
+}else{
+    echo "faild" ;
+}
+?>
+
+```
+---
+```php
+<?php
+
+include "connect.php" ;
+
+$ahm = $con->prepare("UPDATE `users` SET username = ? WHERE id = ? ");
+$ahm->execute(array("Aymen", 3)) ; 
+
+$count = $ahm->rowCount() ;
+
+if ($count > 0) {
+    echo "seccess" ;
+}else{
+    echo "faild" ;
+}
+?>
+
+```
+---
+
+```php
+<?php
+
+include "connect.php" ;
+
+$ahm = $con->prepare("UPDATE `users` SET username = :us WHERE id = :id ");
+$ahm->execute(
+    array(
+        ":us" => "Aymen",
+        ":id" => 3,
+        )) ; 
+
+$count = $ahm->rowCount() ;
+
+if ($count > 0) {
+    echo "seccess" ;
+}else{	
+    echo "faild" ;
+}
+?>
+
+```
+
+# 🗑️ Delete :
+
+```php
+<?php
+
+include "connect.php" ;
+
+$ahm = $con->prepare("DELETE FROM `users` WHERE id = 3 ");
+$ahm->execute() ; 
+
+$count = $ahm->rowCount() ;
+
+if ($count > 0) {
+    echo "seccess" ;
+}else{
+    echo "faild" ;
+}
+?>
+
+```
+---
+```php
+<?php
+
+include "connect.php" ;
+
+$ahm = $con->prepare("DELETE FROM `users` WHERE id = ? ");
+$ahm->execute(array(3)) ; 
+
+$count = $ahm->rowCount() ;
+
+if ($count > 0) {
+    echo "seccess" ;
+}else{
+    echo "faild" ;
+}
+?>
+
+```
+---
+```php
+<?php
+
+include "connect.php" ;
+
+$ahm = $con->prepare("DELETE FROM `users` WHERE id = :id ");
+$ahm->execute(
+    array(
+        ":id" => 3,
+        )) ; 
+
+$count = $ahm->rowCount() ;
+
+if ($count > 0) {
+    echo "seccess" ;
+}else{
+    echo "faild" ;
+}
+?>
+
+```
+---
+# 📁 اهم الملفات لي خاص يكونو عندك فالمشروع ديالك :
+
+ ## 1_ crud.dart :
+
+ ```dart
+
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+class Crud {
+  getRequest(String url) async {
+    try {
+      var response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        var responsebody = jsonDecode(response.body);
+        return responsebody;
+      } else {
+        print("Error ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error $e");
+    }
+  }
+  postRequest(String url, Map data) async {
+    try {
+      var response = await http.post(Uri.parse(url), body: data);
+      if (response.statusCode == 200) {
+        var responsebody = jsonDecode(response.body);
+        return responsebody;
+      } else {
+        print("Error ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error $e");
+    }
+  }
+}
+
+?>
+```
+
+**📦 أول حاجة: شنو كيدير هاد الكود كاملًا؟ هاد الكود عبارة عن class سميتو Crud فيه جوج دوال:**
+
+ا `getRequest:` باش تدير طلب من نوع GET (مثلاً تجيب بيانات).
+
+ا `postRequest:` باش تبعث بيانات للسيرفر (مثلاً تسجل user ولا تدير login).
+
+## 🧱 تفصيل الكود:
+```dart
+import 'package:http/http.dart' as http;
+```
+✔️ هادي كتستورد المكتبة ديال **http** اللي كتخليك تبعث وتستقبل البيانات من وإلى السيرفر.
+
+✔️ كنستعملو **as http** باش نسميو هاد المكتبة **http** فالكود، بحال اسم مستعار.
+
+---
+```dart
+import 'dart:convert';
+```
+✔️ هادي مكتبة ديال **Dart** كتسمح لينا نحولو النصوص لـ **JSON** أو العكس.
+
+
+✔️ حيت السيرفر كيرد علينا فالغالب بـ **JSON،** خاصنا **jsonDecode** باش نفهموه.
+
+---
+```dart
+class Crud {}
+```
+✔️ هنا كنعلنو على **class** سميتو **Crud**.
+
+✔️ هاد **class** غادي نستعملوه باش نديرو اتصالات مع الـ **backend** ديالنا.
+
+---
+```dart
+getRequest(String url) async {}
+```
+✔️ هادي دالة سميتو **getRequest** اللي بتحتاجو واحد **parameter** سميتو url (اللي هي عبارة عن رابط).
+
+---
+```dart
+var response = await http.get(Uri.parse(url));
+
+```
+✔️ هادي كتستعملو دالة **http.get** من المكتبة **http**.
+
+✔️ ا `await`: كنقولو ليه انتظر حتى نوصل نتائج الطلب.
+
+✔️ ا `Uri.parse(url)`:  كنحولو الرابط (url) لـ **URI** (Uniform Resource Identifier) باش نرسله.
+
+---
+
+```dart
+if (response.statusCode == 200) 
+
+```
+✔️ كيتأكد واش الجواب من السيرفر OK (الكود 200 = النجاح).
+
+---
+
+```dart
+var responsebody = jsonDecode(response.body);
+
+```
+✔️ كنحولو الجواب لي جاء من السيرفر من **JSON** إلى **Dart Object** باش نستعملوها فـ Flutter.
+
+✔️ ا `response.body` :  هي النص اللي جا من السيرفر (فالغالب **JSON**).
+
+✔️ ا `jsonDecode` : كتحول النص إلى **Map** ولا **List**.
+
+---
+
+```dart
+else {
+  print("Error ${response.statusCode}");
+}
+```
+✔️ إلا ماكانتش 200، كيطبع الخطأ ديال الكود.
+
+---
+
+```dart
+catch (e) {
+  print("Error $e");
+}
+```
+✔️ `try/catch` : باش يتجنب crash فـ حالة كاين مشكل فـ الاتصال.
+
+---
+
+### الدالة الثانية `postRequest`:
+
+```dart
+postRequest(String url, Map data) async {}
+```
+✔️ هادي دالة سميتو **postRequest** اللي بتحتاجو **2 parameters**:
+
+**1_** ا `url`: الرابط اللي نرسلو له البيانات.
+
+**2_** ا `data`: البيانات اللي نرسلوها.
+
+---
+
+```dart
+var response = await http.post(Uri.parse(url), body: data);
+
+```
+✔️ هنا كيسيفط طلب **POST** فيه البيانات اللي فـ **data**.
+
+---
+
+### ✅ الخلاصة :
+
+✔️ ا `getRequest` : باش تجيب معلومات من السيرفر (مثلاً لائحة ديال المنتجات).
+
+✔️ ا `postRequest` : باش تسيفط معلومات (مثلاً تسجل **user**).
+
+ ✔️الكلاس **Crud** : يسهل عليك الخدمة، بلا ما تعاود تكتب الكود ديال **http.post** كل مرة.
+
+## 2_ linkapi.dart :
+
+```dart
+const String linkServerName = "http://192.168.137.1/coursephp";
+//Auth
+const String linkSignUp = "$linkServerName/auth/signup.php";
+
+```
+---
+
+```dart
+const String linkServerName = "http://192.168.137.1/coursephp";
+```
+
+✔️ هنا كنخزنو رابط السيرفر فـ متغيّر اسميتو **linkServerName**.
+
+✔️ ***192.168.137.1*** هو **IP address** ديال السيرفر (غالبًا الهاتف ولا الحاسوب اللي خدام فيه **XAMPP** أو **Laragon**).
+
+✔️ ا **"coursephp"** هو اسم المجلد اللي فيه ملفات **PHP** ديالك (مثلاً signup.php, login.php…).
+
+✔️ ا `const` معناها هاد القيمة ما غاديش تتبدل.
+
+---
+```dart
+const String linkSignUp = "$linkServerName/auth/signup.php";
+
+```
+
+✔️ هنا كنستعملو **linkServerName** باش نبنيو رابط **signup.php**.
+
+✔️ ا `/auth/signup.php` : يعني الملف **signup.php** كاين داخل مجلد اسميتوه **auth** داخل **coursephp**.
+
+✔️ النتيجة النهائية ديال **linkSignUp** غادي تولي:
+
+```php
+ http://192.168.137.1/coursephp/auth/signup.php
+
+```
+
+✔️ وهاد الرابط هو اللي غادي تبعث ليه البيانات ديال التسجيل من تطبيق Flutter.
+
+### 🧠 علاش درنا هكا؟
+✔️ باش:
+
+➖ ما نعاودوش نفس الرابط بزاف ديال المرات.
+
+➖  إيلا بغيت تبدل IP ولا المجلد، تبدل غير فـ واحد المكان.
+
+### ✅ مثال الاستعمال:
+
+```dart
+var response = await http.post(Uri.parse(linkSignUp), body: {
+  "name": "ahmed",
+  "email": "ahmed@gmail.com",
+  "password": "1234"
+});
+```
+
+✔️ يعني الكود ديالك غادي يبعت المعلومات مباشرة لـ **signup.php**.
+
+---
+
